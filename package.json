@@ -1,0 +1,42 @@
+{
+  "name": "react-datatable",
+  "version": "1.0.0",
+  "description": "react-datatable",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack -p",
+    "dev": "webpack-dev-server --inline --hot"
+  },
+  "author": "dworthen",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "*",
+    "babel-loader": "*",
+    "babel-plugin-add-module-exports": "*",
+    "babel-plugin-react-html-attrs": "*",
+    "babel-plugin-transform-class-properties": "*",
+    "babel-plugin-transform-decorators-legacy": "*",
+    "babel-preset-es2015": "*",
+    "babel-preset-react": "*",
+    "babel-preset-stage-0": "*",
+    "classnames": "^2.2.5",
+    "css-loader": "*",
+    "file-loader": "*",
+    "font-awesome": "^4.6.3",
+    "jshint": "*",
+    "jshint-loader": "*",
+    "lodash": "*",
+    "node-sass": "*",
+    "react": "*",
+    "react-dom": "*",
+    "react-router": "*",
+    "sass-loader": "*",
+    "skeleton-css": "^2.0.4",
+    "style-loader": "*",
+    "url-loader": "*",
+    "webpack": "*",
+    "webpack-dev-server": "*",
+    "yargs": "*"
+  }
+}
