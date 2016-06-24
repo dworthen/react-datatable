@@ -1,9 +1,10 @@
 import React from 'react';
+import { Link, withRouter, browserHistory, hashHistory } from 'react-router';
 import _ from 'lodash';
 
 import DataTable from './DataTable';
 
-export default class QueryTable extends React.Component {
+class QueryTable extends React.Component {
 
   constructor(props) {
     super(props);
@@ -13,19 +14,77 @@ export default class QueryTable extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    console.log('ComponentDidMount');
+    this.props.router.listen(location => {
+      console.log('hide: ', location.query.hide);
+      this.setState(this.getNewState(this.props, location));
+    });
+
+    // const { location, router } = this.props;
+    // const { query, pathname } = this.context.location;
+    // const { filter, sortorder, sortby, hide } = query; 
+
+    // setTimeout(() => {
+    //   this.props.router.push({query: { hide: ['name'] }});
+    // }, 5000);
+
     // Need to determine
-    const { query } = this.props.location;
-    const { filter, sortorder, sortby } = query; 
-    console.log(query);
+    // this.updateData(this.props);
   }
+
+  getNewState(newProps, location) {
+    const { router } = this.props;
+    const { query, pathname } = location;
+    const { filter, sortorder, sortby, hide } = query; 
+
+    const hiddenColumns = [].concat(hide);
+    console.log(hiddenColumns);
+    
+    // console.log(this.context.router.getCurrentQuery());
+    // console.log(window.location);
+
+    let columns = _
+      .chain(newProps.columns)
+      .filter( col => {
+        return !_.includes(hide, col.key);
+      })
+      .value();
+
+    return {columns, data: newProps.data};
+  }
+
+  componentWillReceiveProps(newProps) {
+    console.log('componentWillReceiveProps');
+    const { columns, data } = this.props;
+    if(columns.length == 0 || data.length == 0) {
+      console.log('STATE CHANGE');
+      const state = this.getNewState(newProps, this.context.location);
+      this.setState(state);
+    }
+  }
+
+  // componentDidUpdate() {
+  //   console.log("componentDidUpdate");
+  //   console.log(this.context.location.query.hide);
+  // }
 
   handleFilterChange(el, ind, value) {
     console.log("from app: %s, %s, %s", el.key, ind, value);
   }
 
   handleCloseColumn(el, ind) {
-    console.log("from app: %s, %s", el.key, ind);
+    const { router } = this.props;
+    const { location } = this.context;
+    const { query } = location;
+    let { hide } = query; 
+
+    hide = _.chain([el.key].concat(hide || ''))
+      .compact()
+      .uniq()
+      .value();
+
+    router.push({query: {...query, hide }} );
   }
 
   handleSort(el, ind) {
@@ -49,3 +108,12 @@ export default class QueryTable extends React.Component {
   }
 
 }
+
+QueryTable.contextTypes = {
+  location: React.PropTypes.object
+};
+
+export default withRouter(QueryTable);
+
+
+// export default withRouter(QueryTable);

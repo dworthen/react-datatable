@@ -9,6 +9,7 @@ import Td from '../src/components/Td';
 import Tbody from '../src/components/Tbody';
 import Thead from '../src/components/Thead';
 import DataTable from '../src/components/DataTable';
+import QueryTable from '../src/components/QueryTable';
 
 class Bold extends React.Component {
 
@@ -35,6 +36,12 @@ export default class App extends React.Component {
       //   return el; 
       // }),
       // data: window.data
+    };
+  }
+
+  getChildContext() {
+    return {
+      location: this.props.location
     };
   }
 
@@ -86,13 +93,18 @@ export default class App extends React.Component {
     return (
       <div>
         <h1>App Name</h1>
-        <DataTable columns={this.state.columns} 
-          data={this.state.data} 
-          onFilter={this.handleFilterChange.bind(this)} 
-          onClose={this.handleCloseColumn.bind(this)} 
-          onSort={this.handleSort.bind(this)} />
+        <QueryTable columns={this.state.columns} 
+          data={this.state.data} />
       </div>
     );
   }
 
 }
+
+App.childContextTypes = {
+  location: React.PropTypes.object
+};
+
+// App.contextTypes = {
+//   router: React.PropTypes.object.isRequired
+// };
