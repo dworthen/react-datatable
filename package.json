@@ -22,6 +22,8 @@
     "babel-preset-stage-0": "*",
     "classnames": "^2.2.5",
     "css-loader": "*",
+    "eslint": "^2.13.1",
+    "eslint-plugin-react": "^5.2.2",
     "file-loader": "*",
     "font-awesome": "^4.6.3",
     "jshint": "*",

@@ -94,7 +94,7 @@ export default class App extends React.Component {
       <div>
         <h1>App Name</h1>
         <QueryTable columns={this.state.columns} 
-          data={this.state.data} />
+          data={this.state.data} filterdelay={1000} />
       </div>
     );
   }

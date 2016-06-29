@@ -35,29 +35,37 @@ class QueryTable extends React.Component {
 
   getNewState(newProps, location) {
     const { router } = this.props;
-    const { query, pathname } = location;
-    const { filter, sortorder, sortby, hide } = query; 
+    let { query, pathname } = location;
+    let { filter, sortorder, sortby, hide } = query; 
 
-    const hiddenColumns = [].concat(hide);
-    console.log(hiddenColumns);
-    
-    // console.log(this.context.router.getCurrentQuery());
-    // console.log(window.location);
-
-    let columns = _
-      .chain(newProps.columns)
+    let columns = _.chain(newProps.columns)
       .filter( col => {
         return !_.includes(hide, col.key);
       })
       .value();
 
-    return {columns, data: newProps.data};
+    let data = _.chain(newProps.data);
+
+    if(filter) {
+      filter = _.chain(filter)
+        .map(el => decodeURIComponent(el).split('='))
+        .fromPairs();
+
+      data = data.filter(row => {
+        return filter.every((value, key) => {
+          let regex = new RegExp(value, 'i');
+          return /derek/i.test(row['name']);
+        });
+      });
+    }
+
+    return {columns, data: data.value()};
   }
 
   componentWillReceiveProps(newProps) {
     console.log('componentWillReceiveProps');
     const { columns, data } = this.props;
-    if(columns.length == 0 || data.length == 0) {
+    if(columns.length === 0 || data.length === 0) {
       console.log('STATE CHANGE');
       const state = this.getNewState(newProps, this.context.location);
       this.setState(state);
@@ -69,8 +77,34 @@ class QueryTable extends React.Component {
   //   console.log(this.context.location.query.hide);
   // }
 
-  handleFilterChange(el, ind, value) {
-    console.log("from app: %s, %s, %s", el.key, ind, value);
+  handleFilterChange() {
+    var val = '';
+    return function(el, ind, value) {
+      val = value;
+      const { router } = this.props;
+      const { location } = this.context;
+      const { query } = location;
+      let { filter } = query;
+
+
+      function checkForChange(length) {
+        if(length === val.length) {
+          filter = _.chain([filter || ''].concat(el.key + '=' + val))
+            .compact()
+            .uniq()
+            .map(el => decodeURIComponent(el).split('='))
+            .fromPairs()
+            .toPairs()
+            .filter(val => !!val[1])
+            .map(el => encodeURIComponent(el.join('=')))
+            .value();
+
+          router.push({query: {...query, filter }} );
+          console.log(filter);
+        } 
+      }
+      setTimeout(checkForChange.bind(this, val.length), this.props.filterdelay);
+    };
   }
 
   handleCloseColumn(el, ind) {
@@ -101,7 +135,7 @@ class QueryTable extends React.Component {
     return (
       <DataTable columns={this.state.columns} 
         data={this.state.data} 
-        onFilter={this.handleFilterChange.bind(this)} 
+        onFilter={this.handleFilterChange().bind(this)} 
         onClose={this.handleCloseColumn.bind(this)} 
         onSort={this.handleSort.bind(this)} />
     );
