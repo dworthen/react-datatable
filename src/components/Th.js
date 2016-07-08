@@ -21,7 +21,7 @@ export default class Th extends React.Component {
 
   render() {
     const input = (
-      <span><br/><input type="text" onChange={this.handleChange.bind(this)} /></span>
+      <span><br/><input type="text" value={this.props.filterText} onChange={this.handleChange.bind(this)} /></span>
     );
     const hideButton = (
       <a href="" onClick={this.handleClose.bind(this)}>

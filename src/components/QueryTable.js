@@ -20,17 +20,6 @@ class QueryTable extends React.Component {
       console.log('hide: ', location.query.hide);
       this.setState(this.getNewState(this.props, location));
     });
-
-    // const { location, router } = this.props;
-    // const { query, pathname } = this.context.location;
-    // const { filter, sortorder, sortby, hide } = query; 
-
-    // setTimeout(() => {
-    //   this.props.router.push({query: { hide: ['name'] }});
-    // }, 5000);
-
-    // Need to determine
-    // this.updateData(this.props);
   }
 
   getNewState(newProps, location) {
@@ -39,27 +28,49 @@ class QueryTable extends React.Component {
     let { filter, sortorder, sortby, hide } = query; 
 
     let columns = _.chain(newProps.columns)
+      // .map(col => {
+      //   col.filterText = '';
+      //   return col;
+      // })
       .filter( col => {
         return !_.includes(hide, col.key);
-      })
-      .value();
+      });
 
     let data = _.chain(newProps.data);
 
+
     if(filter) {
-      filter = _.chain(filter)
+      console.log('Filter, ', filter);
+      filter = _.chain([].concat(filter))
         .map(el => decodeURIComponent(el).split('='))
         .fromPairs();
 
+      console.log(filter.value());
+
       data = data.filter(row => {
-        return filter.every((value, key) => {
+        console.log('filter');
+        return filter.every(function (value, key) {
           let regex = new RegExp(value, 'i');
-          return /derek/i.test(row['name']);
-        });
+          return regex.test(row[key] || value);
+        }).value();
       });
+
+      // columns = columns.map(col => {
+      //   col.filterText = filter.has(col.key) ? filter.get(col.key).value() : '';
+      //   return col;
+      // });
     }
 
-    return {columns, data: data.value()};
+    if (sortby && sortorder) {
+      columns = columns.map(col => {
+        col.sort = col.key === sortby ? sortorder : true;
+        return col;
+      });
+      data = data.sortBy(sortby, row => { return _.isString(row[sortby]) ? row[sortby].toLowerCase() : row[sortby]; });
+      data = sortorder === 'desc' ? data.reverse() : data;
+    }
+
+    return {columns: columns.value(), data: data.value()};
   }
 
   componentWillReceiveProps(newProps) {
@@ -72,11 +83,6 @@ class QueryTable extends React.Component {
     }
   }
 
-  // componentDidUpdate() {
-  //   console.log("componentDidUpdate");
-  //   console.log(this.context.location.query.hide);
-  // }
-
   handleFilterChange() {
     var val = '';
     return function(el, ind, value) {
@@ -86,9 +92,14 @@ class QueryTable extends React.Component {
       const { query } = location;
       let { filter } = query;
 
+      el.filterText = value;
+      let columns = this.state.columns;
+      columns[ind] = el;
+      this.setState({columns});
 
       function checkForChange(length) {
         if(length === val.length) {
+          console.log('CHCEKFORCHANGE');
           filter = _.chain([filter || ''].concat(el.key + '=' + val))
             .compact()
             .uniq()
@@ -99,8 +110,11 @@ class QueryTable extends React.Component {
             .map(el => encodeURIComponent(el.join('=')))
             .value();
 
-          router.push({query: {...query, filter }} );
-          console.log(filter);
+            // if(val.length === 1) {
+              router.push({query: {...query, filter }} );
+            // } else {
+            //   router.replace({...location, query: {...query, filter }});
+            // }
         } 
       }
       setTimeout(checkForChange.bind(this, val.length), this.props.filterdelay);
@@ -122,13 +136,12 @@ class QueryTable extends React.Component {
   }
 
   handleSort(el, ind) {
-    let sort = el.sort || false;
-    sort = sort === "asc" ? "desc" : "asc";
-    let newColumns = _.cloneDeep(this.state.columns);
-    newColumns[ind].sort = sort;
-    console.log(newColumns);
-    this.setState({ columns: newColumns });
-    console.log("from app: %s, %s, %s", el.key, ind, sort);
+    const { router } = this.props;
+    const { location } = this.context;
+    const { query } = location;
+    let sort = (el.sort && el.sort === 'asc') ? 'desc' : 'asc';
+
+    router.push({...location, query: {...query, sortby: el.key, sortorder: sort}});
   }
 
   render() {
@@ -148,6 +161,3 @@ QueryTable.contextTypes = {
 };
 
 export default withRouter(QueryTable);
-
-
-// export default withRouter(QueryTable);

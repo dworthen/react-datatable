@@ -16,7 +16,8 @@ export default class Thead extends React.Component {
         className={el.classes}
         onClose={this.handleCloseColumn.bind(this, el, ind)} 
         onFilter={this.handleFilterChange.bind(this, el, ind)} 
-        onSort={this.handleSort.bind(this, el, ind)} />;
+        onSort={this.handleSort.bind(this, el, ind)} 
+        filterText={el.filterText} />;
     });
   }
 

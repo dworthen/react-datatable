@@ -54,6 +54,7 @@ export default class App extends React.Component {
         el.sort = true;
         el.classes = classNames('hide', 'test');
         el.formatter = Bold;
+        el.filterText = '';
         return el; 
       })
     });
