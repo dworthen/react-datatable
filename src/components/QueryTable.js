@@ -15,9 +15,8 @@ class QueryTable extends React.Component {
   }
 
   componentDidMount() {
-    console.log('ComponentDidMount');
+    console.log('=== ComponentDidMount ===');
     this.props.router.listen(location => {
-      console.log('hide: ', location.query.hide);
       this.setState(this.getNewState(this.props, location));
     });
   }
@@ -28,10 +27,10 @@ class QueryTable extends React.Component {
     let { filter, sortorder, sortby, hide } = query; 
 
     let columns = _.chain(newProps.columns)
-      // .map(col => {
-      //   col.filterText = '';
-      //   return col;
-      // })
+      .map(col => {
+        col.filterText = '';
+        return col;
+      })
       .filter( col => {
         return !_.includes(hide, col.key);
       });
@@ -40,25 +39,21 @@ class QueryTable extends React.Component {
 
 
     if(filter) {
-      console.log('Filter, ', filter);
       filter = _.chain([].concat(filter))
         .map(el => decodeURIComponent(el).split('='))
         .fromPairs();
 
-      console.log(filter.value());
-
       data = data.filter(row => {
-        console.log('filter');
         return filter.every(function (value, key) {
           let regex = new RegExp(value, 'i');
           return regex.test(row[key] || value);
         }).value();
       });
 
-      // columns = columns.map(col => {
-      //   col.filterText = filter.has(col.key) ? filter.get(col.key).value() : '';
-      //   return col;
-      // });
+      columns = columns.map(col => {
+        col.filterText = filter.has(col.key) ? filter.get(col.key).value() : '';
+        return col;
+      });
     }
 
     if (sortby && sortorder) {
@@ -66,7 +61,7 @@ class QueryTable extends React.Component {
         col.sort = col.key === sortby ? sortorder : true;
         return col;
       });
-      data = data.sortBy(sortby, row => { return _.isString(row[sortby]) ? row[sortby].toLowerCase() : row[sortby]; });
+      data = data.sortBy(row => { return _.isString(row[sortby]) ? row[sortby].toLowerCase() : row[sortby]; });
       data = sortorder === 'desc' ? data.reverse() : data;
     }
 
@@ -74,10 +69,10 @@ class QueryTable extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    console.log('componentWillReceiveProps');
+    console.log('=== componentWillReceiveProps ===');
     const { columns, data } = this.props;
     if(columns.length === 0 || data.length === 0) {
-      console.log('STATE CHANGE');
+      console.log('=== PROPS CHANGED ===');
       const state = this.getNewState(newProps, this.context.location);
       this.setState(state);
     }
@@ -99,7 +94,6 @@ class QueryTable extends React.Component {
 
       function checkForChange(length) {
         if(length === val.length) {
-          console.log('CHCEKFORCHANGE');
           filter = _.chain([filter || ''].concat(el.key + '=' + val))
             .compact()
             .uniq()
@@ -119,6 +113,15 @@ class QueryTable extends React.Component {
       }
       setTimeout(checkForChange.bind(this, val.length), this.props.filterdelay);
     };
+  }
+
+  handleFilterChange2(el, ind, value) {
+    el.filterText = value;
+    let columns = this.state.columns;
+    columns[ind] = el;
+    this.setState({columns});
+
+    updateFromFilterChange.call(this, el, ind, value);
   }
 
   handleCloseColumn(el, ind) {
@@ -148,7 +151,7 @@ class QueryTable extends React.Component {
     return (
       <DataTable columns={this.state.columns} 
         data={this.state.data} 
-        onFilter={this.handleFilterChange().bind(this)} 
+        onFilter={this.handleFilterChange2.bind(this)} 
         onClose={this.handleCloseColumn.bind(this)} 
         onSort={this.handleSort.bind(this)} />
     );
@@ -159,5 +162,35 @@ class QueryTable extends React.Component {
 QueryTable.contextTypes = {
   location: React.PropTypes.object
 };
+
+
+var val = '';
+function updateFromFilterChange(el, ind, value) {
+  val = value;
+
+  function checkForChange(length) {
+    const { router } = this.props;
+    const { location } = this.context;
+    const { query } = location;
+    let { filter } = query;
+    console.log(filter);
+    console.log(_.keys(router));
+
+    if(length === val.length) {
+      filter = _.chain([].concat([filter || '']).concat(el.key + '=' + val))
+        .compact()
+        .uniq()
+        .map(el => decodeURIComponent(el).split('='))
+        .fromPairs()
+        .toPairs()
+        .filter(val => !!val[1])
+        .map(el => encodeURIComponent(el.join('=')))
+        .value();
+
+      router.push({query: {...query, filter }} );
+    } 
+  }
+  setTimeout(checkForChange.bind(this, val.length), this.props.filterdelay);
+}
 
 export default withRouter(QueryTable);
