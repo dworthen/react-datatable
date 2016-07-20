@@ -10,6 +10,7 @@ import Tbody from '../src/components/Tbody';
 import Thead from '../src/components/Thead';
 import DataTable from '../src/components/DataTable';
 import QueryTable from '../src/components/QueryTable';
+import ClearQuery from '../src/components/ClearQuery';
 
 class Bold extends React.Component {
 
@@ -94,6 +95,7 @@ export default class App extends React.Component {
     return (
       <div>
         <h1>App Name</h1>
+        <ClearQuery param="hide">Show All Columns</ClearQuery>
         <QueryTable columns={this.state.columns} 
           data={this.state.data} filterdelay={1000} />
       </div>

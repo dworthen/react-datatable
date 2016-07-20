@@ -40,7 +40,7 @@ export default class Th extends React.Component {
       "fa-sort": this.props.sort
     });
     const sort = (
-      <i className={sortClasses}></i>
+      <i className={sortClasses} onClick={this.handleSort.bind(this)}></i>
     );
     return (
       <th className={this.props.className}>

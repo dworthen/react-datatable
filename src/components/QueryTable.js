@@ -167,17 +167,15 @@ QueryTable.contextTypes = {
 var val = '';
 function updateFromFilterChange(el, ind, value) {
   val = value;
+  const { router } = this.props;
+  const { location } = this.context;
+  const { query } = location;
+  let { filter } = query;
 
   function checkForChange(length) {
-    const { router } = this.props;
-    const { location } = this.context;
-    const { query } = location;
-    let { filter } = query;
-    console.log(filter);
-    console.log(_.keys(router));
 
     if(length === val.length) {
-      filter = _.chain([].concat([filter || '']).concat(el.key + '=' + val))
+      filter = _.chain([].concat(filter || '').concat(el.key + '=' + val))
         .compact()
         .uniq()
         .map(el => decodeURIComponent(el).split('='))
