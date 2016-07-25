@@ -2,10 +2,10 @@ var argv = require('yargs').argv;
 
 module.exports = {
   context: __dirname,
-  devtool: argv.p ? null : "inline-sourcemap",
-  entry: './app/client.js',
+  devtool: "inline-sourcemap",
+  entry: argv.p ? './src/index.js' : './app/client.js',
   output: {
-    filename: './app/client.min.js'
+    filename: argv.p ? './dist/index.js' : './app/client.min.js'
   },
   module: {
     // preLoaders: [
@@ -57,7 +57,7 @@ module.exports = {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         loader: "url?limit=10000&mimetype=image/svg+xml"
       }
-    ],
+    ]
   },
   jshint: {
     esversion: 6
