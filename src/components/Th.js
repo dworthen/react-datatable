@@ -1,5 +1,5 @@
 import React from 'react';
-import * as FA from 'font-awesome/css/font-awesome.css';
+// import * as FA from 'font-awesome/css/font-awesome.css';
 import classNames from 'classnames';
 
 export default class Th extends React.Component {
