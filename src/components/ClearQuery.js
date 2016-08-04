@@ -18,9 +18,24 @@ class ClearQuery extends React.Component {
     router.push({...location, ...query});
   }
 
+  renderWithFormatting() {
+    const { children } = this.props;
+    const Formatter = this.props.formatter;
+    if (!Formatter) return children;
+    
+    if(typeof Formatter == 'function') {
+      return <Formatter value={children} />;
+    } else {
+      return React.cloneElement(Formatter, {value: children});
+    }
+
+  }
+
   render() {
     return (
-      <a href="" onClick={this.handleClick.bind(this)}>{this.props.children}</a>
+      <span onClick={this.handleClick.bind(this)}>
+        {this.renderWithFormatting()}
+      </span>
     );
   }
 }

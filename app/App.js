@@ -8,7 +8,7 @@ import Td from '../src/components/Td';
 import Tbody from '../src/components/Tbody';
 import Thead from '../src/components/Thead';
 import DataTable from '../src/components/DataTable';
-import { QueryTable } from '../index';
+import QueryTable from '../src/components/QueryTable';
 import ClearQuery from '../src/components/ClearQuery';
 
 console.log(QueryTable);
@@ -18,6 +18,16 @@ class Bold extends React.Component {
   render() {
     return (
       <strong>{this.props.value}</strong>
+    );
+  }
+
+}
+
+class Button extends React.Component {
+
+  render() {
+    return (
+      <button>{this.props.value}</button>
     );
   }
 
@@ -96,7 +106,7 @@ export default class App extends React.Component {
     return (
       <div>
         <h1>React Data Tables Two</h1>
-        <ClearQuery param="hide">Show All Columns</ClearQuery>
+        <ClearQuery param="hide" formatter={Button}>Show All Columns</ClearQuery>
         <QueryTable columns={this.state.columns} 
           data={this.state.data} filterdelay={1000} />
       </div>
