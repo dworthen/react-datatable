@@ -3,14 +3,15 @@ import { Link, withRouter, browserHistory, hashHistory } from 'react-router';
 import classNames from 'classnames';
 import _ from 'lodash';
 
-
 import Th from '../src/components/Th';
 import Td from '../src/components/Td';
 import Tbody from '../src/components/Tbody';
 import Thead from '../src/components/Thead';
 import DataTable from '../src/components/DataTable';
-import QueryTable from '../src/components/QueryTable';
+import { QueryTable } from '../index';
 import ClearQuery from '../src/components/ClearQuery';
+
+console.log(QueryTable);
 
 class Bold extends React.Component {
 
@@ -94,7 +95,7 @@ export default class App extends React.Component {
     const classes = classNames(['test', 'two']);
     return (
       <div>
-        <h1>App Name</h1>
+        <h1>React Data Tables Two</h1>
         <ClearQuery param="hide">Show All Columns</ClearQuery>
         <QueryTable columns={this.state.columns} 
           data={this.state.data} filterdelay={1000} />

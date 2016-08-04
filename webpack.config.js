@@ -5,20 +5,20 @@ module.exports = {
   devtool: "inline-sourcemap",
   entry: argv.p ? './src/index.js' : './app/client.js',
   output: {
-    filename: argv.p ? './dist/index.js' : './app/client.min.js'
+    filename: argv.p ? './dist/index.js' : './app/client.min.js',
+    library: argv.p ? 'kepler' : undefined,
+    libraryTarget: argv.p ? 'commonjs2' : undefined
+  },
+  externals: !argv.p ? undefined : {
+    'react': 'react',
+    'react-dom': 'react-dom',
+    'react-router': 'react-router'
   },
   module: {
-    // preLoaders: [
-    //     {
-    //         test: /\.js$/,
-    //         exclude: /node_modules/,
-    //         loader: 'jshint'
-    //     }
-    // ],
     loaders: [
       {
         test: /\.js$/,
-        exclude: /node_modules/,
+        exclude: /node_modules|dist/,
         loader: 'babel',
         query: {
           presets: ['react', 'es2015', 'stage-0'],
@@ -39,27 +39,24 @@ module.exports = {
       }, 
       {
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "url?limit=10000&mimetype=application/font-woff"
+        loader: "url?mimetype=application/font-woff"
       }, 
       {
         test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "url?limit=10000&mimetype=application/font-woff"
+        loader: "url?mimetype=application/font-woff"
       }, 
       {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "url?limit=10000&mimetype=application/octet-stream"
+        loader: "url?mimetype=application/octet-stream"
       }, 
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "file"
+        loader: "url?mimetype=application/vnd.ms-fontobject"
       }, 
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "url?limit=10000&mimetype=image/svg+xml"
+        loader: "url?mimetype=image/svg+xml"
       }
     ]
-  },
-  jshint: {
-    esversion: 6
   }
 };

@@ -1,10 +1,10 @@
-var ClearQuery = require('./components/ClearQuery')
-  , DataTable = require('./components/DataTable')
-  , QueryTable = require('./components/QueryTable')
-  , Tbody = require('./components/Tbody')
-  , Td = require('./components/Td')
-  , Th = require('./components/Th')
-  , Thead = require('./components/Thead');
+import ClearQuery from './components/ClearQuery';
+import DataTable from './components/DataTable';
+import QueryTable from './components/QueryTable';
+import Tbody from './components/Tbody';
+import Td from './components/Td';
+import Th from './components/Th';
+import Thead from './components/Thead';
 
 
 module.exports = {

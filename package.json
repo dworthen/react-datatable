@@ -11,6 +11,7 @@
   "author": "dworthen",
   "license": "ISC",
   "devDependencies": {
+    "babel-cli": "^6.11.4",
     "babel-core": "*",
     "babel-loader": "*",
     "babel-plugin-add-module-exports": "*",
