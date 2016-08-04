@@ -108,7 +108,7 @@ export default class App extends React.Component {
         <h1>React Data Tables Two</h1>
         <ClearQuery param="hide" formatter={Button}>Show All Columns</ClearQuery>
         <QueryTable columns={this.state.columns} 
-          data={this.state.data} filterdelay={1000} />
+          data={this.state.data} filterdelay={1000} fixHeader />
       </div>
     );
   }

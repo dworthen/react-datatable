@@ -153,7 +153,8 @@ class QueryTable extends React.Component {
         data={this.state.data} 
         onFilter={this.handleFilterChange2.bind(this)} 
         onClose={this.handleCloseColumn.bind(this)} 
-        onSort={this.handleSort.bind(this)} />
+        onSort={this.handleSort.bind(this)} 
+        fixHeader={this.props.fixHeader} />
     );
   }
 
