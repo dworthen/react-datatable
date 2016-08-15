@@ -78,43 +78,6 @@ class QueryTable extends React.Component {
     }
   }
 
-  handleFilterChange() {
-    var val = '';
-    return function(el, ind, value) {
-      val = value;
-      const { router } = this.props;
-      const { location } = this.context;
-      const { query } = location;
-      let { filter } = query;
-
-      el.filterText = value;
-      let columns = this.state.columns;
-      columns[ind] = el;
-      this.setState({columns});
-
-      function checkForChange(length) {
-        if(length === val.length) {
-          filter = _.chain([filter || ''].concat(el.key + '=' + val))
-            .compact()
-            .uniq()
-            .map(el => decodeURIComponent(el).split('='))
-            .fromPairs()
-            .toPairs()
-            .filter(val => !!val[1])
-            .map(el => encodeURIComponent(el.join('=')))
-            .value();
-
-            // if(val.length === 1) {
-              router.push({query: {...query, filter }} );
-            // } else {
-            //   router.replace({...location, query: {...query, filter }});
-            // }
-        } 
-      }
-      setTimeout(checkForChange.bind(this, val.length), this.props.filterdelay);
-    };
-  }
-
   handleFilterChange2(el, ind, value) {
     el.filterText = value;
     let columns = this.state.columns;
